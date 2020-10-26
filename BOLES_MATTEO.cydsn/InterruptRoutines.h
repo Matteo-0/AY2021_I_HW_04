@@ -13,5 +13,6 @@
     
     uint8 DataBufferPhotoresistor [TRANSMIT_BUFFER_SIZE];
     uint8 DataBufferPotentiometer [TRANSMIT_BUFFER_SIZE];
+    volatile uint8 PacketReadyFlag;
 #endif
 /* [] END OF FILE */
