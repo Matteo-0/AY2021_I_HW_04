@@ -13,13 +13,11 @@
 #include "InterruptRoutines.h"
 // Include required header files
 #include "project.h"
- 
-#define THRESHOLD 30000                                        // define the threshold under which we activate the external LED
 
 // Variables declaration
 int32 value_digit_photo, value_digit_pot;                      // variables where we save the digitized values of the photoresistor and of the potentiometer
 uint8 ch_received;                                             // variable where we save the char sent for the remote control 
-uint8 SendBytesFlag=0;
+uint8 SendBytesFlag=0;                                         // variable used to take trace of when the char 'b' or 'B' is sent so that we can start sampling signals
 
 CY_ISR (Custom_ISR_ADC)
 {
@@ -40,7 +38,7 @@ CY_ISR (Custom_ISR_ADC)
         if (value_digit_pot < 0)        value_digit_pot = 0;         
         if (value_digit_pot > 65535)    value_digit_pot = 65535; 
         
-        if (value_digit_photo < THRESHOLD)                       // if the digitized value of the photoresistor is below a certain threshold 
+        if (value_digit_photo < 20000)                           // if the digitized value of the photoresistor is below a certain threshold 
         {       
             PWM_WriteCompare(value_digit_pot);                   // we set the brightness of the external LED according to the digitized value of the potentiometer
         }
@@ -67,15 +65,15 @@ CY_ISR (received_datum)                     // interrupt activated on the receiv
     {
         case 'B':                           // if the char sent was 'b' or 'B'
         case 'b':
-            SendBytesFlag=1;                // we set this variable to 1 to take trace of when 'b' or 'B' is sent
-            InternalLED_Write(1);           // we turn the internal LED on we will start the ADC    
+            SendBytesFlag=1;                
+            InternalLED_Write(1);               
             Timer_Start();                  // we start the timer that activates an ISR where we read and save the digitized values coming from the photoresistor and the potentiometer
             ADCDelSig_Start();              // we start the ADC
             break;                           
         case 'S':                           // if the char sent was 's' or 'S'
         case 's':
-            SendBytesFlag=0;                // we set this variable to 0 
-            InternalLED_Write(0);           // we turn the internal LED off because we will stop the ADC
+            SendBytesFlag=0;                 
+            InternalLED_Write(0);           
             PWM_WriteCompare(0);            // we turn off the external LED
             Timer_Stop();                   // we stop the timer that activates the ISR where we read and save the digitized values coming from the photoresistor and the potentiometer
             ADCDelSig_Stop();               // we stop the ADC

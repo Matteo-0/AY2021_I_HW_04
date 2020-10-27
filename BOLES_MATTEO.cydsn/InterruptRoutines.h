@@ -15,12 +15,12 @@
     #include "stdio.h"
     
     #define BYTE_TO_SEND 4                                      // define how many bytes we want to send
-    #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1               // define the size of the bytes sent including header and tail bytes
+    #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1               // define how many bytes we have, including header and tail bytes
 
     CY_ISR_PROTO(Custom_ISR_ADC);                               // definition of the interrupt activated by the timer
     CY_ISR_PROTO(received_datum);                               // definition of the interrupt activated on the received byte 
     
     uint8 DataBuffer [TRANSMIT_BUFFER_SIZE];                    // array where we save the digitized values of the photoresistor and of the potentiometer  
-    volatile uint8 PacketReadyFlag;                             // variable that we set to one after we have saved all the digitized values
+    volatile uint8 PacketReadyFlag;                             // variable that we set to one after we have saved all the digitized values in the DataBuffer array
 #endif
 /* [] END OF FILE */
