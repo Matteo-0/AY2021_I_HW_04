@@ -15,7 +15,7 @@
     #include "stdio.h"
     
     #define BYTE_TO_SEND 4                                      // define how many bytes we want to send
-    #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1               // define how many bytes we have, including header and tail bytes
+    #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1               // define how many bytes we send, including header and tail bytes
 
     CY_ISR_PROTO(Custom_ISR_ADC);                               // definition of the interrupt activated by the timer
     CY_ISR_PROTO(received_datum);                               // definition of the interrupt activated on the received byte 

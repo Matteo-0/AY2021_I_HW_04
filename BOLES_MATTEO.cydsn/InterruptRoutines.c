@@ -9,9 +9,8 @@
 *    \date: October 30, 2020
 */
 
-// Include header
-#include "InterruptRoutines.h"
 // Include required header files
+#include "InterruptRoutines.h"
 #include "project.h"
 
 // Variables declaration
@@ -24,27 +23,27 @@ CY_ISR (Custom_ISR_ADC)
     Timer_ReadStatusRegister();                                // Read Timer status register to bring interrupt line low
     if (SendBytesFlag)                                         // if this flag is 1 we start to read the digitized values of the ADC
     { 
-        AMux_FastSelect(0);                                     // we select the first channel of the Mux
-        value_digit_photo = ADCDelSig_Read32();                 // we read the digitized value of the photoresistor
+        AMux_FastSelect(0);                                    // we select the first channel of the Mux
+        value_digit_photo = ADCDelSig_Read32();                // we read the digitized value of the photoresistor
         
         // this is done to fix unstable behaviours that would lead the digitized value below zero or over 65535
         if (value_digit_photo < 0)      value_digit_photo = 0;
         if (value_digit_photo > 65535)  value_digit_photo = 65535;
         
-        AMux_FastSelect(1);                                     // we select the second channel of the Mux
-        value_digit_pot = ADCDelSig_Read32();                   // we read the digitized value of the potentiometer
+        AMux_FastSelect(1);                                    // we select the second channel of the Mux
+        value_digit_pot = ADCDelSig_Read32();                  // we read the digitized value of the potentiometer
         
         // this is done to fix unstable behaviours that would lead the digitized value below zero or over 65535
         if (value_digit_pot < 0)        value_digit_pot = 0;         
         if (value_digit_pot > 65535)    value_digit_pot = 65535; 
         
-        if (value_digit_photo < 20000)                           // if the digitized value of the photoresistor is below a certain threshold 
+        if (value_digit_photo < 20000)                          // if the digitized value of the photoresistor is below a certain threshold 
         {       
-            PWM_WriteCompare(value_digit_pot);                   // we set the brightness of the external LED according to the digitized value of the potentiometer
+            PWM_WriteCompare(value_digit_pot);                  // we set the brightness of the external LED according to the digitized value of the potentiometer
         }
-        else                                                     // if the digitized value of the photoresistor is over a certain threshold
+        else                                                    // if the digitized value of the photoresistor is over a certain threshold
         {
-            PWM_WriteCompare(0);                                 // we turn the external LED off
+            PWM_WriteCompare(0);                                // we turn the external LED off
         }
         
         // we save the digitized values of the photoresistor and of the potentiometer in the DataBuffer array taking into account the most and least significant bits
@@ -68,7 +67,7 @@ CY_ISR (received_datum)                     // interrupt activated on the receiv
             SendBytesFlag=1;                
             InternalLED_Write(1);               
             Timer_Start();                  // we start the timer that activates an ISR where we read and save the digitized values coming from the photoresistor and the potentiometer
-            ADCDelSig_Start();              // we start the ADC
+            ADCDelSig_StartConvert();       // we start the ADC conversion
             break;                           
         case 'S':                           // if the char sent was 's' or 'S'
         case 's':
@@ -76,7 +75,7 @@ CY_ISR (received_datum)                     // interrupt activated on the receiv
             InternalLED_Write(0);           
             PWM_WriteCompare(0);            // we turn off the external LED
             Timer_Stop();                   // we stop the timer that activates the ISR where we read and save the digitized values coming from the photoresistor and the potentiometer
-            ADCDelSig_Stop();               // we stop the ADC
+            ADCDelSig_StopConvert();        // we stop the ADC conversion
         default:
             break;
     }

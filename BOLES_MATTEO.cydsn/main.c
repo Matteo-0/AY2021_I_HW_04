@@ -24,14 +24,11 @@ int main(void)
     ISR_ADC_StartEx(Custom_ISR_ADC);
     ISR_Received_StartEx(received_datum);
     
-    // Initialize send flag
+    // Initialize flag
     PacketReadyFlag = 0;                           // this variable tells us if the digitized values of the photoresistor and of the potentiometer have been saved in the DataBuffer array                
     
     DataBuffer[0]=0xA0;                            // we save the header byte in the first position of the DataBuffer array
     DataBuffer[TRANSMIT_BUFFER_SIZE-1]=0xC0;       // we save the tail byte in the last position of the DataBuffer array
-    
-    // Start the ADC conversion
-    ADCDelSig_StartConvert();
     
     for(;;)
     {
